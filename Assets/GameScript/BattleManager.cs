@@ -14,6 +14,8 @@ public class BattleManager : Singleton<BattleManager>
     [SerializeField] GameObject[] Fast_AttackCard;
     [SerializeField] GameObject[] Second_AttackCard;
     [SerializeField] GameObject[] Third_AttackCard;
+    [SerializeField] GameObject PlayerTrun_Text;
+    [SerializeField] GameObject EnemyTrun_Text;
     public GameObject targetPlayer;
     public List<int> deck = new List<int>() { 71, 71, 72, 72, 73, 81, 81, 81, 82, 83, 91, 92, 92, 93, 93 };
     public List<int> hand;
@@ -39,6 +41,8 @@ public class BattleManager : Singleton<BattleManager>
         EnemyChar = GameObject.FindGameObjectsWithTag("Enemy");
         PlayerTurn = true;
         EnemyTurn = false;
+        PlayerTrun_Text.SetActive(false);
+        EnemyTrun_Text.SetActive(false);
     }
 
     void Update()
@@ -53,6 +57,10 @@ public class BattleManager : Singleton<BattleManager>
                 EnemyTurn = true;
                 foreach (Transform child in SelectPanel.transform) { Destroy(child.gameObject); }
                 hand.Clear();
+                EnemyTrun_Text.SetActive(true);
+                int i = 0;
+                EnemyTrun_Text.transform.DOLocalMoveX(i++*2000f, 1.2f).SetEase(Ease.OutQuart).SetLoops(2, LoopType.Incremental);
+                DOVirtual.DelayedCall(2f, () => EnemyTrun_Text.SetActive(false));
                 EnemyAttack();
                 return;
             }
@@ -60,6 +68,10 @@ public class BattleManager : Singleton<BattleManager>
             {
                 PlayerTurn = true;
                 EnemyTurn = false;
+                PlayerTrun_Text.SetActive(true);
+                int i = 0;
+                PlayerTrun_Text.transform.DOLocalMoveX(i++*2000f, 1.2f).SetEase(Ease.OutQuart).SetLoops(2, LoopType.Incremental);
+                DOVirtual.DelayedCall(2f, () => PlayerTrun_Text.SetActive(false));
                 return;
             }
         }
@@ -69,6 +81,7 @@ public class BattleManager : Singleton<BattleManager>
             AttackNum = 0;
             AttackStart = true;
             ChooseableCard = false;
+            CardSelect = false;
             DOVirtual.DelayedCall(0.5f, () => SelectPanel.SetActive(false));//íxâÑèàóù
             Attack(); 
         }
@@ -222,63 +235,63 @@ public class BattleManager : Singleton<BattleManager>
         float posx = -1800;
         for(int i = 0; i < 5; i++)
         {
-            if (hand[i] == 11)
+            if (hand[i] == 71)
             {
                 GameObject Card = Instantiate(Fast_AttackCard[0], SelectPanel.transform.position, Quaternion.identity);
                 Card.transform.SetParent(SelectPanel.transform);
                 Card.transform.localScale = new Vector3(1, 1, 1);
                 Card.transform.localPosition = new Vector3(posx, 0f, 0f);
             }
-            if (hand[i] == 12)
+            if (hand[i] == 72)
             {
                 GameObject Card = Instantiate(Fast_AttackCard[1], SelectPanel.transform.position, Quaternion.identity);
                 Card.transform.SetParent(SelectPanel.transform);
                 Card.transform.localScale = new Vector3(1, 1, 1);
                 Card.transform.localPosition = new Vector3(posx, 0f, 0f);
             }
-            if (hand[i] == 13)
+            if (hand[i] == 73)
             {
                 GameObject Card = Instantiate(Fast_AttackCard[2], SelectPanel.transform.position, Quaternion.identity);
                 Card.transform.SetParent(SelectPanel.transform);
                 Card.transform.localScale = new Vector3(1, 1, 1);
                 Card.transform.localPosition = new Vector3(posx, 0f, 0f);
             }
-            if (hand[i] == 21)
+            if (hand[i] == 81)
             {
                 GameObject Card = Instantiate(Second_AttackCard[0], SelectPanel.transform.position, Quaternion.identity);
                 Card.transform.SetParent(SelectPanel.transform);
                 Card.transform.localScale = new Vector3(1, 1, 1);
                 Card.transform.localPosition = new Vector3(posx, 0f, 0f);
             }
-            if (hand[i] == 22)
+            if (hand[i] == 82)
             {
                 GameObject Card = Instantiate(Second_AttackCard[1], SelectPanel.transform.position, Quaternion.identity);
                 Card.transform.SetParent(SelectPanel.transform);
                 Card.transform.localScale = new Vector3(1, 1, 1);
                 Card.transform.localPosition = new Vector3(posx, 0f, 0f);
             }
-            if (hand[i] == 23)
+            if (hand[i] == 83)
             {
                 GameObject Card = Instantiate(Second_AttackCard[2], SelectPanel.transform.position, Quaternion.identity);
                 Card.transform.SetParent(SelectPanel.transform);
                 Card.transform.localScale = new Vector3(1, 1, 1);
                 Card.transform.localPosition = new Vector3(posx, 0f, 0f);
             }
-            if (hand[i] == 31)
+            if (hand[i] == 91)
             {
                 GameObject Card = Instantiate(Third_AttackCard[0], SelectPanel.transform.position, Quaternion.identity);
                 Card.transform.SetParent(SelectPanel.transform);
                 Card.transform.localScale = new Vector3(1, 1, 1);
                 Card.transform.localPosition = new Vector3(posx, 0f, 0f);
             }
-            if (hand[i] == 32)
+            if (hand[i] == 92)
             {
                 GameObject Card = Instantiate(Third_AttackCard[1], SelectPanel.transform.position, Quaternion.identity);
                 Card.transform.SetParent(SelectPanel.transform);
                 Card.transform.localScale = new Vector3(1, 1, 1);
                 Card.transform.localPosition = new Vector3(posx, 0f, 0f);
             }
-            if (hand[i] == 33)
+            if (hand[i] == 93)
             {
                 GameObject Card = Instantiate(Third_AttackCard[2], SelectPanel.transform.position, Quaternion.identity);
                 Card.transform.SetParent(SelectPanel.transform);
@@ -327,7 +340,6 @@ public class BattleManager : Singleton<BattleManager>
             damage[i] = playerAT / targetDF * 55 * 1.1f;
             damage[i] = Mathf.Floor(damage[i]);
             DOVirtual.DelayedCall( (i+1)*3,()=>EnemyChar[AttackCount].GetComponent<Enemy>().Attack = true);
-            Debug.Log("www");
         }
     }
 }

@@ -13,6 +13,7 @@ public class Character : MonoBehaviour
 
     [SerializeField] GameObject[] effect;
     public Transform effectPos;
+    public GameObject atEf;
 
     Vector3 defaultPos;
     Vector3 targetPos;
@@ -60,6 +61,7 @@ public class Character : MonoBehaviour
             Die = true;
             BattleManager.Instance.deck.RemoveAll(card => card == charID+7);
             animator.SetTrigger("Die");
+            GameManager.Instance.char_die[charID] = true;
         }
         if (preHP != HPCurrent)
         {
@@ -90,8 +92,10 @@ public class Character : MonoBehaviour
                 }
                 if (charID == 1)
                 {
-                    animator.SetTrigger("AttackType_1");
+                    DOVirtual.DelayedCall(0.5f, () => animator.SetTrigger("AttackType_1"));
                     DOVirtual.DelayedCall(1f, () => GameManager.Instance.targetEnemy.GetComponent<Enemy>().HPCurrent -= BattleManager.Instance.damage[BattleManager.Instance.AttackCount++]);
+                    DOVirtual.DelayedCall(1.5f, () => atEf = Instantiate(effect[0], effectPos.position, Quaternion.EulerAngles(15f, -80f, 0f)));
+                    DOVirtual.DelayedCall(1.5f, () => Destroy(atEf, 1f));
                 }
             }
             if (AttackType2)
@@ -113,6 +117,8 @@ public class Character : MonoBehaviour
                 {
                     animator.SetTrigger("AttackType_2");
                     DOVirtual.DelayedCall(1f, () => GameManager.Instance.targetEnemy.GetComponent<Enemy>().HPCurrent -= BattleManager.Instance.damage[BattleManager.Instance.AttackCount++]);
+                    DOVirtual.DelayedCall(1f, () => atEf = Instantiate(effect[1], GameManager.Instance.targetEnemy.transform.position, Quaternion.identity));
+                    DOVirtual.DelayedCall(1.5f, () => Destroy(atEf, 1f));
                 }
             }
             if (AttackType3)
@@ -137,14 +143,5 @@ public class Character : MonoBehaviour
         this.transform.DOMoveX(defaultPos.x, 1.5f);
         DOVirtual.DelayedCall(1f, () => animator.SetBool("Back", false));
     }
-    /*void EffectIns()
-    {
-        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack02Maintain"))
-        {
-            atack = true;
-            GameObject atackEff = Instantiate(effect[0],effectPos.position,Quaternion.EulerAngles(0f,-90f,0f));
-            Destroy(atackEff, 4f);
-        }
-    }*/
 
 }

@@ -48,6 +48,7 @@ public class Enemy : MonoBehaviour
             DOTween.Kill(this);
             Die = true;
             animator.SetTrigger("Die");
+            GameManager.Instance.enemy_die[enemyID] = true;
         }
         if (Attack)
         {
